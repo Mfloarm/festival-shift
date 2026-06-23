@@ -102,7 +102,7 @@
   table { width: 100%; border-collapse: collapse; background: #fff; border: 2px solid var(--navy); border-top: none; min-width: 520px; }
   th { background: var(--light); font-size: .72rem; font-weight: 700; padding: 7px 8px; border: 1px solid #D8D0C4; text-align: center; white-space: nowrap; }
   td { padding: 7px 8px; border: 1px solid #E8E2D8; font-size: .82rem; vertical-align: top; }
-  .time-cell { font-weight: 700; white-space: nowrap; color: var(--navy); background: var(--paper); text-align: center; }
+  .time-cell { font-weight: 700; color: var(--navy); background: var(--paper); text-align: center; vertical-align: middle; line-height: 1.6; }
   .count-total { font-size: 1.2rem; font-weight: 900; line-height: 1.2; }
   .count-ball-color { color: var(--ball); }
   .count-arch-color { color: var(--arch); }
@@ -161,8 +161,8 @@
     <h2>🏮 参加情報を追加</h2>
     <div class="form-row full">
       <div>
-        <label>名前　※小中学生は名前の後に(学年ークラス)を入力</label>
-        <input type="text" id="inp-name" placeholder="例：晴海　花子（1ーA）">
+        <label>名前 &nbsp;<span style="font-size:.72rem;font-weight:400;color:var(--gray);">中学生・小学生は名前の後ろに（学年ークラス）を入力してください</span></label>
+        <input type="text" id="inp-name" placeholder="例：晴海　花子">
       </div>
     </div>
     <label style="margin-bottom:6px;">区分</label>
@@ -428,10 +428,10 @@ function renderShift() {
         <div class="table-wrap"><table style="table-layout:fixed;width:100%;">
           <thead>
             <tr>
-              <th style="width:22%">時間帯</th>
-              <th style="width:26%;color:var(--ball)">🎱 ${settings.stall1}</th>
-              <th style="width:26%;color:var(--arch)">🎯 ${settings.stall2}</th>
-              <th style="width:26%;color:var(--tbd)">❓ 未定</th>
+              <th style="width:16%">時間帯</th>
+              <th style="width:28%;color:var(--ball)">🎱 ${settings.stall1}</th>
+              <th style="width:28%;color:var(--arch)">🎯 ${settings.stall2}</th>
+              <th style="width:28%;color:var(--tbd)">❓ 未定</th>
             </tr>
           </thead>
           <tbody>
@@ -463,7 +463,7 @@ function renderShift() {
               };
               return `
                 <tr>
-                  <td class="time-cell">${slot.start}〜${slot.end}</td>
+                  <td class="time-cell">${slot.start}<br>〜<br>${slot.end}</td>
                   <td>${cellContent(byStall.ball,'count-ball-color')}</td>
                   <td>${cellContent(byStall.arch,'count-arch-color')}</td>
                   <td>${cellContent(byStall.tbd,'count-tbd-color')}</td>
