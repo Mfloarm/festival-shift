@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>お祭りシフト表</title>
+<title>屋台シフト表</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
 
@@ -160,7 +160,7 @@
 
 <header>
   <span class="lantern">🏮</span>
-  <h1>お祭りシフト表</h1>
+  <h1>屋台シフト表</h1>
   <button class="sync-btn" onclick="loadMembers()">🔄 更新</button>
 </header>
 
@@ -173,18 +173,18 @@
 <!-- 入力タブ -->
 <div id="tab-input" class="section active">
   <div class="form-card">
-    <h2>🎪 参加情報を追加</h2>
+    <h2>🏮 参加情報を追加</h2>
 
     <div class="form-row full">
       <div>
         <label>名前</label>
-        <input type="text" id="inp-name" placeholder="例：田中さくら">
+        <input type="text" id="inp-name" placeholder="例：晴海花子">
       </div>
     </div>
 
     <label style="margin-bottom:6px;">区分</label>
     <div class="age-selector">
-      <button class="age-btn sel-adult" id="age-adult" onclick="selectAge('adult')">👨 大人</button>
+      <button class="age-btn sel-adult" id="age-adult" onclick="selectAge('adult')">👨👩 大人</button>
       <button class="age-btn" id="age-junior" onclick="selectAge('junior')">🧑 中学生</button>
       <button class="age-btn" id="age-elem" onclick="selectAge('elem')">👦 小学生</button>
     </div>
