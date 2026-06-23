@@ -456,7 +456,7 @@ function generateSlots(dm) {
   const starts = dm.map(m => m.start).sort();
   const ends   = dm.map(m => m.end).sort().reverse();
   let cur = starts[0]; const last = ends[0]; const slots = [];
-  while (cur < last) { const next = addMin(cur, 30); slots.push({start:cur,end:next}); cur=next; }
+  while (cur < last) { const next = addMin(cur, 60); slots.push({start:cur,end:next}); cur=next; }
   return slots;
 }
 
