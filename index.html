@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>屋台シフト表</title>
+<title>お祭りシフト表</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
 
@@ -83,8 +83,9 @@
   .day-check.checked { background: var(--navy); border-color: var(--navy); color: #fff; }
   .day-label { font-weight: 700; font-size: .95rem; }
 
-  .time-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; }
-  .time-sep { font-weight: 700; color: var(--gray); text-align: center; }
+  .time-row { display: flex; align-items: center; gap: 6px; }
+  .time-row input[type="time"] { flex: 1; min-width: 0; padding: 10px 6px; font-size: .88rem; }
+  .time-sep { font-weight: 700; color: var(--gray); white-space: nowrap; flex-shrink: 0; }
 
   .btn-add { width: 100%; padding: 13px; background: var(--red); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; letter-spacing: .04em; transition: opacity .15s; margin-top: 4px; }
   .btn-add:hover { opacity: .85; }
@@ -159,7 +160,7 @@
 
 <header>
   <span class="lantern">🏮</span>
-  <h1>屋台シフト表</h1>
+  <h1>お祭りシフト表</h1>
   <button class="sync-btn" onclick="loadMembers()">🔄 更新</button>
 </header>
 
@@ -177,7 +178,7 @@
     <div class="form-row full">
       <div>
         <label>名前</label>
-        <input type="text" id="inp-name" placeholder="例：晴海花子">
+        <input type="text" id="inp-name" placeholder="例：田中さくら">
       </div>
     </div>
 
@@ -202,28 +203,28 @@
     <hr class="divider">
 
     <!-- 1日目 -->
-    <div class="day-block active" id="block-day1">
+    <div class="day-block inactive" id="block-day1">
       <div class="day-block-header" onclick="toggleDay(1)">
-        <div class="day-check checked" id="check-day1">✓</div>
+        <div class="day-check" id="check-day1"></div>
         <span class="day-label">🎆 1日目</span>
       </div>
       <div class="time-row" id="time-day1">
-        <input type="time" id="inp-start1" value="10:00">
+        <input type="time" id="inp-start1" value="12:00" disabled>
         <div class="time-sep">〜</div>
-        <input type="time" id="inp-end1" value="12:00">
+        <input type="time" id="inp-end1" value="20:00" disabled>
       </div>
     </div>
 
     <!-- 2日目 -->
-    <div class="day-block active" id="block-day2">
+    <div class="day-block inactive" id="block-day2">
       <div class="day-block-header" onclick="toggleDay(2)">
-        <div class="day-check checked" id="check-day2">✓</div>
+        <div class="day-check" id="check-day2"></div>
         <span class="day-label">🎆 2日目</span>
       </div>
       <div class="time-row" id="time-day2">
-        <input type="time" id="inp-start2" value="10:00">
+        <input type="time" id="inp-start2" value="12:00" disabled>
         <div class="time-sep">〜</div>
-        <input type="time" id="inp-end2" value="12:00">
+        <input type="time" id="inp-end2" value="20:00" disabled>
       </div>
     </div>
 
@@ -256,7 +257,7 @@
 <!-- 設定タブ -->
 <div id="tab-settings" class="section">
   <div class="form-card">
-    <h2>⚙️ 屋台基本設定</h2>
+    <h2>⚙️ お祭り基本設定</h2>
     <div class="setting-row">
       <div><div class="setting-label">屋台①の名前</div></div>
       <input class="setting-input" id="set-stall1" value="スーパーボールすくい">
@@ -285,7 +286,7 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycby7T14faWh0pU_6yXpg_o3G
 
 let members = [];
 let selectedAge = 'adult';
-let dayChecked = { 1: true, 2: true };
+let dayChecked = { 1: false, 2: false };
 
 let settings = JSON.parse(localStorage.getItem('fm-settings') || 'null') || {
   stall1: 'スーパーボールすくい', stall2: '的当てアーチェリー', date1: '', date2: ''
