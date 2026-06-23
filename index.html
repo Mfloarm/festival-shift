@@ -399,9 +399,7 @@ function renderMemberList() {
           <span class="age-tag age-tag-${g.age||'adult'}">${AGE_LABEL[g.age||'adult']}</span>
         </div>
         ${g.days.map(d => `
-          <div class="member-meta">${d.day}日目 &nbsp; ${d.start}〜${d.end}
-            <button class="btn-del" style="font-size:.8rem;padding:0 4px;" onclick="deleteMember('${d.id}')">✕</button>
-          </div>
+          <div class="member-meta">${d.day}日目 &nbsp; ${d.start}〜${d.end}</div>
         `).join('')}
       </div>
       <span class="member-badge badge-${g.stall}">${stallLabel(g.stall)}</span>
