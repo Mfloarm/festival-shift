@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お祭りシフト表</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+
+  :root {
+    --red:    #E8392A;
+    --orange: #F47920;
+    --yellow: #FDD835;
+    --navy:   #1A1F3C;
+    --white:  #FFFDF8;
+    --paper:  #FFF8EE;
+    --ball:   #3DB8E8;
+    --arch:   #6BBF59;
+    --tbd:    #A78BFA;
+    --gray:   #888;
+    --light:  #F2EDE4;
+    --adult:  #E8392A;
+    --junior: #F47920;
+    --elem:   #3DB8E8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans JP', sans-serif; background: var(--white); color: var(--navy); min-height: 100vh; }
+
+  header { background: var(--navy); padding: 18px 24px 14px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+  header h1 { font-size: 1.2rem; font-weight: 900; color: var(--yellow); letter-spacing: .04em; flex:1; }
+  header .lantern { font-size: 1.5rem; }
+
+  .sync-btn {
+    background: none; border: 1.5px solid var(--yellow); color: var(--yellow);
+    border-radius: 6px; font-family: inherit; font-size: .75rem; font-weight: 700;
+    padding: 5px 10px; cursor: pointer; transition: .15s;
+  }
+  .sync-btn:hover { background: var(--yellow); color: var(--navy); }
+
+  .tabs { display: flex; background: var(--light); border-bottom: 3px solid var(--navy); }
+  .tab { flex: 1; padding: 12px; text-align: center; font-weight: 700; font-size: .9rem; cursor: pointer; color: var(--gray); border: none; background: transparent; transition: .15s; }
+  .tab.active { background: var(--navy); color: var(--yellow); }
+
+  .section { display: none; padding: 20px 16px; }
+  .section.active { display: block; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--navy); color: #fff; padding: 10px 20px; border-radius: 20px;
+    font-size: .85rem; font-weight: 700; z-index: 999;
+    opacity: 0; transition: opacity .3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 30px; color: var(--gray); font-size: .9rem; }
+  .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #ddd; border-top-color: var(--navy); border-radius: 50%; animation: spin .7s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .form-card { background: var(--paper); border: 2px solid var(--navy); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+  .form-card h2 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  label { font-size: .78rem; font-weight: 700; color: var(--gray); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+  input[type="text"], input[type="time"], input[type="date"], select {
+    width: 100%; padding: 10px 12px; border: 2px solid #D8D0C4; border-radius: 8px;
+    font-family: inherit; font-size: .95rem; background: #fff; color: var(--navy); outline: none; transition: border .15s;
+  }
+  input:focus, select:focus { border-color: var(--navy); }
+
+  .age-selector { display: flex; gap: 8px; margin-bottom: 14px; }
+  .age-btn { flex: 1; padding: 10px 4px; border: 2px solid #D8D0C4; border-radius: 8px; font-family: inherit; font-size: .82rem; font-weight: 700; cursor: pointer; background: #fff; color: var(--gray); transition: .15s; text-align: center; }
+  .age-btn.sel-adult  { border-color: var(--adult);  background: var(--adult);  color: #fff; }
+  .age-btn.sel-junior { border-color: var(--junior); background: var(--junior); color: #fff; }
+  .age-btn.sel-elem   { border-color: var(--elem);   background: var(--elem);   color: #fff; }
+
+  .time-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .time-sep { font-weight: 700; color: var(--gray); text-align: center; }
+
+  .btn-add { width: 100%; padding: 13px; background: var(--red); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; letter-spacing: .04em; transition: opacity .15s; }
+  .btn-add:hover { opacity: .85; }
+  .btn-add:disabled { opacity: .5; cursor: not-allowed; }
+
+  .member-item { display: flex; align-items: center; gap: 10px; background: #fff; border: 1.5px solid #E0D9CF; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; }
+  .member-info { flex: 1; min-width: 0; }
+  .member-name-row { display: flex; align-items: center; gap: 6px; }
+  .member-name { font-weight: 700; }
+  .age-tag { font-size: .68rem; font-weight: 700; padding: 2px 6px; border-radius: 10px; color: #fff; white-space: nowrap; }
+  .age-tag-adult  { background: var(--adult); }
+  .age-tag-junior { background: var(--junior); }
+  .age-tag-elem   { background: var(--elem); }
+  .member-meta { font-size: .8rem; color: var(--gray); margin-top: 2px; }
+  .member-badge { font-size: .7rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; color: #fff; white-space: nowrap; }
+  .badge-ball { background: var(--ball); }
+  .badge-arch { background: var(--arch); }
+  .badge-tbd  { background: var(--tbd); }
+  .btn-del { background: none; border: none; color: var(--gray); cursor: pointer; font-size: 1.1rem; padding: 2px 6px; }
+  .btn-del:hover { color: var(--red); }
+
+  .day-section { margin-bottom: 32px; }
+  .day-title { font-size: 1rem; font-weight: 900; color: var(--white); background: var(--navy); padding: 8px 14px; border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 8px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 2px solid var(--navy); border-top: none; min-width: 520px; }
+  th { background: var(--light); font-size: .72rem; font-weight: 700; padding: 7px 8px; border: 1px solid #D8D0C4; text-align: center; white-space: nowrap; }
+  td { padding: 7px 8px; border: 1px solid #E8E2D8; font-size: .82rem; vertical-align: top; }
+  .time-cell { font-weight: 700; white-space: nowrap; color: var(--navy); background: var(--paper); text-align: center; }
+  .count-wrap { text-align: center; }
+  .count-total { font-size: 1.2rem; font-weight: 900; line-height: 1.2; }
+  .count-ball-color { color: var(--ball); }
+  .count-arch-color { color: var(--arch); }
+  .count-tbd-color  { color: var(--tbd); }
+  .count-breakdown { display: flex; justify-content: center; gap: 3px; margin-top: 3px; flex-wrap: wrap; }
+  .count-chip { font-size: .65rem; font-weight: 700; padding: 1px 5px; border-radius: 10px; color: #fff; }
+  .chip-adult  { background: var(--adult); }
+  .chip-junior { background: var(--junior); }
+  .chip-elem   { background: var(--elem); }
+  .names-cell { line-height: 1.8; }
+  .pill { display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 20px; margin: 1px 2px; font-weight: 700; border: 2px solid transparent; }
+  .pill-ball-adult  { background: var(--ball); color: #fff; border-color: var(--adult); }
+  .pill-ball-junior { background: var(--ball); color: #fff; border-color: var(--junior); }
+  .pill-ball-elem   { background: var(--ball); color: #fff; border-color: var(--elem); }
+  .pill-arch-adult  { background: var(--arch); color: #fff; border-color: var(--adult); }
+  .pill-arch-junior { background: var(--arch); color: #fff; border-color: var(--junior); }
+  .pill-arch-elem   { background: var(--arch); color: #fff; border-color: var(--elem); }
+  .pill-tbd-adult   { background: var(--tbd);  color: #fff; border-color: var(--adult); }
+  .pill-tbd-junior  { background: var(--tbd);  color: #fff; border-color: var(--junior); }
+  .pill-tbd-elem    { background: var(--tbd);  color: #fff; border-color: var(--elem); }
+
+  .empty-msg { text-align: center; color: var(--gray); padding: 40px 20px; font-size: .9rem; }
+
+  .legend-block { background: var(--paper); border: 1.5px solid #E0D9CF; border-radius: 10px; padding: 12px 14px; margin-bottom: 16px; }
+  .legend-title { font-size: .75rem; font-weight: 700; color: var(--gray); margin-bottom: 8px; }
+  .legend-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: .78rem; font-weight: 700; }
+  .legend-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .legend-pill-demo { display: inline-block; width: 32px; height: 14px; border-radius: 7px; border: 2px solid transparent; }
+
+  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #E8E2D8; }
+  .setting-label { font-weight: 700; font-size: .9rem; }
+  .setting-input { width: 140px; padding: 8px 10px; border: 2px solid #D8D0C4; border-radius: 8px; font-family: inherit; font-size: .9rem; }
+  .btn-save { margin-top: 20px; width: 100%; padding: 13px; background: var(--orange); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .15s; }
+  .btn-save:hover { opacity: .85; }
+  .saved-msg { text-align: center; color: var(--arch); font-weight: 700; margin-top: 12px; display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="lantern">🏮</span>
+  <h1>お祭りシフト表</h1>
+  <button class="sync-btn" onclick="loadMembers()">🔄 更新</button>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('input', this)">✏️ 入力</button>
+  <button class="tab" onclick="switchTab('shift', this)">📋 シフト表</button>
+  <button class="tab" onclick="switchTab('settings', this)">⚙️ 設定</button>
+</div>
+
+<div id="tab-input" class="section active">
+  <div class="form-card">
+    <h2>🎪 参加情報を追加</h2>
+    <div class="form-row full">
+      <div>
+        <label>名前</label>
+        <input type="text" id="inp-name" placeholder="例：田中さくら">
+      </div>
+    </div>
+    <label style="margin-bottom:6px;">区分</label>
+    <div class="age-selector">
+      <button class="age-btn sel-adult" id="age-adult" onclick="selectAge('adult')">👨 大人</button>
+      <button class="age-btn" id="age-junior" onclick="selectAge('junior')">🧑 中学生</button>
+      <button class="age-btn" id="age-elem" onclick="selectAge('elem')">👦 小学生</button>
+    </div>
+    <div class="form-row">
+      <div>
+        <label>日程</label>
+        <select id="inp-day">
+          <option value="1">1日目</option>
+          <option value="2">2日目</option>
+        </select>
+      </div>
+      <div>
+        <label>担当屋台</label>
+        <select id="inp-stall">
+          <option value="ball">スーパーボールすくい</option>
+          <option value="arch">的当てアーチェリー</option>
+          <option value="tbd">未定</option>
+        </select>
+      </div>
+    </div>
+    <label style="margin-bottom:6px;">参加時間</label>
+    <div class="time-row">
+      <input type="time" id="inp-start" value="10:00" step="1800">
+      <div class="time-sep">〜</div>
+      <input type="time" id="inp-end" value="12:00" step="1800">
+    </div>
+    <button class="btn-add" id="btn-add" onclick="addMember()">＋ 追加する</button>
+  </div>
+  <h2 style="font-size:.9rem;font-weight:700;margin-bottom:12px;">登録済みメンバー（<span id="member-count">0</span>名）</h2>
+  <div id="member-list"><div class="loading"><span class="spinner"></span>読み込み中...</div></div>
+</div>
+
+<div id="tab-shift" class="section">
+  <div class="legend-block">
+    <div class="legend-title">■ 屋台（背景色）</div>
+    <div class="legend-row" style="margin-bottom:8px;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--ball)"></div>スーパーボールすくい</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--arch)"></div>的当てアーチェリー</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--tbd)"></div>未定</div>
+    </div>
+    <div class="legend-title">■ 区分（枠線の色）</div>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-pill-demo" style="background:var(--gray);border-color:var(--adult)"></div>大人</div>
+      <div class="legend-item"><div class="legend-pill-demo" style="background:var(--gray);border-color:var(--junior)"></div>中学生</div>
+      <div class="legend-item"><div class="legend-pill-demo" style="background:var(--gray);border-color:var(--elem)"></div>小学生</div>
+    </div>
+  </div>
+  <div id="shift-content"><div class="loading"><span class="spinner"></span>読み込み中...</div></div>
+</div>
+
+<div id="tab-settings" class="section">
+  <div class="form-card">
+    <h2>⚙️ お祭り基本設定</h2>
+    <div class="setting-row">
+      <div><div class="setting-label">屋台①の名前</div></div>
+      <input class="setting-input" id="set-stall1" value="スーパーボールすくい">
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">屋台②の名前</div></div>
+      <input class="setting-input" id="set-stall2" value="的当てアーチェリー">
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">1日目の日付</div></div>
+      <input class="setting-input" type="date" id="set-date1">
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">2日目の日付</div></div>
+      <input class="setting-input" type="date" id="set-date2">
+    </div>
+    <button class="btn-save" onclick="saveSettings()">保存する</button>
+    <div class="saved-msg" id="saved-msg">✅ 保存しました！</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby7T14faWh0pU_6yXpg_o3GafggREMAfzLgiEAC_IvJtPbEmFzau8x8bfkmu5EIYnWe/exec';
+
+let members = [];
+let selectedAge = 'adult';
+let settings = JSON.parse(localStorage.getItem('fm-settings') || 'null') || {
+  stall1: 'スーパーボールすくい', stall2: '的当てアーチェリー', date1: '', date2: ''
+};
+
+const AGE_LABEL = { adult: '大人', junior: '中学生', elem: '小学生' };
+
+// ===== 初期化 =====
+document.getElementById('set-stall1').value = settings.stall1;
+document.getElementById('set-stall2').value = settings.stall2;
+document.getElementById('set-date1').value  = settings.date1;
+document.getElementById('set-date2').value  = settings.date2;
+loadMembers();
+
+// ===== GAS通信: 全件取得 =====
+async function loadMembers() {
+  try {
+    const res  = await fetch(`${GAS_URL}?action=getAll`);
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message);
+    members = json.data;
+    renderMemberList();
+    renderShift();
+  } catch(e) {
+    showToast('⚠️ 読み込みに失敗しました');
+    document.getElementById('member-list').innerHTML = '<div class="empty-msg">データの読み込みに失敗しました。<br>🔄 更新ボタンを押してみてください。</div>';
+  }
+}
+
+// ===== GAS通信: 追加 =====
+async function addMember() {
+  const name  = document.getElementById('inp-name').value.trim();
+  const day   = document.getElementById('inp-day').value;
+  const stall = document.getElementById('inp-stall').value;
+  const start = document.getElementById('inp-start').value;
+  const end   = document.getElementById('inp-end').value;
+
+  if (!name)        { showToast('⚠️ 名前を入力してください'); return; }
+  if (!start||!end) { showToast('⚠️ 時間を入力してください'); return; }
+  if (start >= end) { showToast('⚠️ 終了時間は開始時間より後にしてください'); return; }
+
+  const btn = document.getElementById('btn-add');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+
+  try {
+    const res  = await fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'add', name, age: selectedAge, day, stall, start, end })
+    });
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message);
+
+    document.getElementById('inp-name').value = '';
+    showToast('✅ 追加しました！');
+    await loadMembers();
+  } catch(e) {
+    showToast('⚠️ 追加に失敗しました');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '＋ 追加する';
+  }
+}
+
+// ===== GAS通信: 削除 =====
+async function deleteMember(id) {
+  if (!confirm('このメンバーを削除しますか？')) return;
+  try {
+    const res  = await fetch(`${GAS_URL}?action=delete&id=${id}`);
+    const json = await res.json();
+    if (json.status !== 'ok') throw new Error(json.message);
+    showToast('🗑️ 削除しました');
+    await loadMembers();
+  } catch(e) {
+    showToast('⚠️ 削除に失敗しました');
+  }
+}
+
+// ===== タブ切替 =====
+function switchTab(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'shift') renderShift();
+}
+
+// ===== 区分選択 =====
+function selectAge(age) {
+  selectedAge = age;
+  ['adult','junior','elem'].forEach(a => {
+    document.getElementById('age-' + a).className = 'age-btn' + (a === age ? ' sel-' + a : '');
+  });
+}
+
+// ===== 屋台ラベル =====
+function stallLabel(s) {
+  if (s === 'ball') return settings.stall1;
+  if (s === 'arch') return settings.stall2;
+  return '未定';
+}
+
+// ===== メンバー一覧描画 =====
+function renderMemberList() {
+  const el = document.getElementById('member-list');
+  document.getElementById('member-count').textContent = members.length;
+  if (!members.length) { el.innerHTML = '<div class="empty-msg">まだ追加されていません</div>'; return; }
+
+  el.innerHTML = members.map(m => `
+    <div class="member-item">
+      <div class="member-info">
+        <div class="member-name-row">
+          <span class="member-name">${m.name}</span>
+          <span class="age-tag age-tag-${m.age||'adult'}">${AGE_LABEL[m.age||'adult']}</span>
+        </div>
+        <div class="member-meta">${m.day === '1' ? '1日目' : '2日目'} &nbsp; ${m.start}〜${m.end}</div>
+      </div>
+      <span class="member-badge badge-${m.stall}">${stallLabel(m.stall)}</span>
+      <button class="btn-del" onclick="deleteMember('${m.id}')">✕</button>
+    </div>
+  `).join('');
+}
+
+// ===== シフト表描画 =====
+function renderShift() {
+  const el = document.getElementById('shift-content');
+  if (!members.length) {
+    el.innerHTML = '<div class="empty-msg">まだ参加者が登録されていません。<br>「入力」タブから追加してください。</div>';
+    return;
+  }
+
+  let html = '';
+  [1, 2].forEach(day => {
+    const dm = members.filter(m => m.day == day);
+    if (!dm.length) return;
+
+    const slots = generateSlots(dm);
+    const dateLabel = day === 1
+      ? (settings.date1 ? `（${formatDate(settings.date1)}）` : '')
+      : (settings.date2 ? `（${formatDate(settings.date2)}）` : '');
+
+    html += `
+      <div class="day-section">
+        <div class="day-title">🎆 ${day}日目 ${dateLabel}</div>
+        <div class="table-wrap"><table>
+          <thead>
+            <tr>
+              <th rowspan="2">時間帯</th>
+              <th colspan="2" style="color:var(--ball)">🎱 ${settings.stall1}</th>
+              <th colspan="2" style="color:var(--arch)">🎯 ${settings.stall2}</th>
+              <th colspan="2" style="color:var(--tbd)">❓ 未定</th>
+              <th rowspan="2">参加メンバー</th>
+            </tr>
+            <tr>
+              <th style="color:var(--ball)">合計</th>
+              <th style="color:var(--ball);font-size:.65rem">大人/中/小</th>
+              <th style="color:var(--arch)">合計</th>
+              <th style="color:var(--arch);font-size:.65rem">大人/中/小</th>
+              <th style="color:var(--tbd)">合計</th>
+              <th style="color:var(--tbd);font-size:.65rem">大人/中/小</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${slots.map(slot => {
+              const inSlot = dm.filter(m => m.start <= slot.start && m.end > slot.start);
+              const byStall = {
+                ball: inSlot.filter(m => m.stall==='ball'),
+                arch: inSlot.filter(m => m.stall==='arch'),
+                tbd:  inSlot.filter(m => m.stall==='tbd')
+              };
+              const chips = arr => {
+                const a = arr.filter(m=>(m.age||'adult')==='adult').length;
+                const j = arr.filter(m=>m.age==='junior').length;
+                const e = arr.filter(m=>m.age==='elem').length;
+                return (a||j||e)
+                  ? `${a?`<span class="count-chip chip-adult">${a}</span>`:''}${j?`<span class="count-chip chip-junior">${j}</span>`:''}${e?`<span class="count-chip chip-elem">${e}</span>`:''}`
+                  : '<span style="color:#ccc;font-size:.7rem">—</span>';
+              };
+              const pills = inSlot.map(m =>
+                `<span class="pill pill-${m.stall}-${m.age||'adult'}">${m.name}</span>`
+              ).join('');
+              return `
+                <tr>
+                  <td class="time-cell">${slot.start}〜${slot.end}</td>
+                  <td class="count-wrap"><span class="count-total count-ball-color">${byStall.ball.length||'—'}</span></td>
+                  <td><div class="count-breakdown">${chips(byStall.ball)}</div></td>
+                  <td class="count-wrap"><span class="count-total count-arch-color">${byStall.arch.length||'—'}</span></td>
+                  <td><div class="count-breakdown">${chips(byStall.arch)}</div></td>
+                  <td class="count-wrap"><span class="count-total count-tbd-color">${byStall.tbd.length||'—'}</span></td>
+                  <td><div class="count-breakdown">${chips(byStall.tbd)}</div></td>
+                  <td class="names-cell">${pills||'<span style="color:#ccc">-</span>'}</td>
+                </tr>`;
+            }).join('')}
+          </tbody>
+        </table></div>
+      </div>`;
+  });
+
+  el.innerHTML = html || '<div class="empty-msg">登録されたメンバーがいません。</div>';
+}
+
+function generateSlots(dm) {
+  const starts = dm.map(m => m.start).sort();
+  const ends   = dm.map(m => m.end).sort().reverse();
+  let cur = starts[0]; const last = ends[0]; const slots = [];
+  while (cur < last) { const next = addMin(cur, 30); slots.push({start:cur,end:next}); cur=next; }
+  return slots;
+}
+
+function addMin(time, mins) {
+  const [h,m] = time.split(':').map(Number);
+  const t = h*60+m+mins;
+  return String(Math.floor(t/60)%24).padStart(2,'0')+':'+String(t%60).padStart(2,'0');
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  return `${dt.getMonth()+1}/${dt.getDate()}`;
+}
+
+function saveSettings() {
+  settings.stall1 = document.getElementById('set-stall1').value.trim() || 'スーパーボールすくい';
+  settings.stall2 = document.getElementById('set-stall2').value.trim() || '的当てアーチェリー';
+  settings.date1  = document.getElementById('set-date1').value;
+  settings.date2  = document.getElementById('set-date2').value;
+  localStorage.setItem('fm-settings', JSON.stringify(settings));
+  document.querySelector('#inp-stall option[value="ball"]').textContent = settings.stall1;
+  document.querySelector('#inp-stall option[value="arch"]').textContent = settings.stall2;
+  renderMemberList(); renderShift();
+  const msg = document.getElementById('saved-msg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 2000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
