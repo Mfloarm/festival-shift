@@ -64,22 +64,11 @@
   .age-btn.sel-junior { border-color: var(--junior); background: var(--junior); color: #fff; }
   .age-btn.sel-elem   { border-color: var(--elem);   background: var(--elem);   color: #fff; }
 
-  /* 日程ブロック */
-  .day-block {
-    border: 2px solid #D8D0C4; border-radius: 10px; padding: 14px; margin-bottom: 12px;
-    background: #fff; transition: border-color .15s;
-  }
+  .day-block { border: 2px solid #D8D0C4; border-radius: 10px; padding: 14px; margin-bottom: 12px; background: #fff; transition: border-color .15s; }
   .day-block.active { border-color: var(--navy); }
   .day-block.inactive { opacity: .45; }
-
-  .day-block-header {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer;
-  }
-  .day-check {
-    width: 22px; height: 22px; border: 2px solid #D8D0C4; border-radius: 6px;
-    background: #fff; display: flex; align-items: center; justify-content: center;
-    font-size: .9rem; flex-shrink: 0; transition: .15s;
-  }
+  .day-block-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer; }
+  .day-check { width: 22px; height: 22px; border: 2px solid #D8D0C4; border-radius: 6px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: .9rem; flex-shrink: 0; transition: .15s; }
   .day-check.checked { background: var(--navy); border-color: var(--navy); color: #fff; }
   .day-label { font-weight: 700; font-size: .95rem; }
 
@@ -107,7 +96,6 @@
   .btn-del { background: none; border: none; color: var(--gray); cursor: pointer; font-size: 1.1rem; padding: 2px 6px; flex-shrink: 0; }
   .btn-del:hover { color: var(--red); }
 
-  /* シフト表 */
   .day-section { margin-bottom: 32px; }
   .day-title { font-size: 1rem; font-weight: 900; color: var(--white); background: var(--navy); padding: 8px 14px; border-radius: 8px 8px 0 0; display: flex; align-items: center; gap: 8px; }
   .table-wrap { overflow-x: auto; }
@@ -115,12 +103,11 @@
   th { background: var(--light); font-size: .72rem; font-weight: 700; padding: 7px 8px; border: 1px solid #D8D0C4; text-align: center; white-space: nowrap; }
   td { padding: 7px 8px; border: 1px solid #E8E2D8; font-size: .82rem; vertical-align: top; }
   .time-cell { font-weight: 700; white-space: nowrap; color: var(--navy); background: var(--paper); text-align: center; }
-  .count-wrap { text-align: center; }
   .count-total { font-size: 1.2rem; font-weight: 900; line-height: 1.2; }
   .count-ball-color { color: var(--ball); }
   .count-arch-color { color: var(--arch); }
   .count-tbd-color  { color: var(--tbd); }
-  .count-breakdown { display: flex; justify-content: center; gap: 3px; margin-top: 3px; flex-wrap: wrap; }
+  .count-breakdown { display: flex; gap: 3px; flex-wrap: wrap; }
   .count-chip { font-size: .65rem; font-weight: 700; padding: 1px 5px; border-radius: 10px; color: #fff; }
   .chip-adult  { background: var(--adult); }
   .chip-junior { background: var(--junior); }
@@ -152,7 +139,6 @@
   .btn-save { margin-top: 20px; width: 100%; padding: 13px; background: var(--orange); color: #fff; border: none; border-radius: 10px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: opacity .15s; }
   .btn-save:hover { opacity: .85; }
   .saved-msg { text-align: center; color: var(--arch); font-weight: 700; margin-top: 12px; display: none; }
-
   .divider { border: none; border-top: 1.5px solid #E0D9CF; margin: 16px 0; }
 </style>
 </head>
@@ -170,25 +156,21 @@
   <button class="tab" onclick="switchTab('settings', this)">⚙️ 設定</button>
 </div>
 
-<!-- 入力タブ -->
 <div id="tab-input" class="section active">
   <div class="form-card">
     <h2>🏮 参加情報を追加</h2>
-
     <div class="form-row full">
       <div>
         <label>名前</label>
         <input type="text" id="inp-name" placeholder="例：晴海　花子">
       </div>
     </div>
-
     <label style="margin-bottom:6px;">区分</label>
     <div class="age-selector">
       <button class="age-btn sel-adult" id="age-adult" onclick="selectAge('adult')">👨👩 大人</button>
       <button class="age-btn" id="age-junior" onclick="selectAge('junior')">🧑 中学生</button>
       <button class="age-btn" id="age-elem" onclick="selectAge('elem')">👦 小学生</button>
     </div>
-
     <div class="form-row full">
       <div>
         <label>担当屋台</label>
@@ -199,10 +181,7 @@
         </select>
       </div>
     </div>
-
     <hr class="divider">
-
-    <!-- 1日目 -->
     <div class="day-block inactive" id="block-day1">
       <div class="day-block-header" onclick="toggleDay(1)">
         <div class="day-check" id="check-day1"></div>
@@ -214,8 +193,6 @@
         <input type="time" id="inp-end1" value="20:00" disabled>
       </div>
     </div>
-
-    <!-- 2日目 -->
     <div class="day-block inactive" id="block-day2">
       <div class="day-block-header" onclick="toggleDay(2)">
         <div class="day-check" id="check-day2"></div>
@@ -227,18 +204,15 @@
         <input type="time" id="inp-end2" value="20:00" disabled>
       </div>
     </div>
-
     <button class="btn-add" id="btn-add" onclick="addMember()">＋ 追加する</button>
   </div>
-
   <h2 style="font-size:.9rem;font-weight:700;margin-bottom:12px;">登録済みメンバー（<span id="member-count">0</span>名）</h2>
   <div id="member-list"><div class="loading"><span class="spinner"></span>読み込み中...</div></div>
 </div>
 
-<!-- シフトタブ -->
 <div id="tab-shift" class="section">
   <div class="legend-block">
-    <div class="legend-title">■ 屋台（背景色）</div>
+    <div class="legend-title">■ 屋台（列）</div>
     <div class="legend-row" style="margin-bottom:8px;">
       <div class="legend-item"><div class="legend-dot" style="background:var(--ball)"></div>スーパーボールすくい</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--arch)"></div>的当てアーチェリー</div>
@@ -246,15 +220,14 @@
     </div>
     <div class="legend-title">■ 区分（枠線の色）</div>
     <div class="legend-row">
-      <div class="legend-item"><div class="legend-pill-demo" style="background:var(--adult);border-color:var(--adult)"></div>大人</div>
-      <div class="legend-item"><div class="legend-pill-demo" style="background:var(--junior);border-color:var(--junior)"></div>中学生</div>
-      <div class="legend-item"><div class="legend-pill-demo" style="background:var(--elem);border-color:var(--elem)"></div>小学生</div>
+      <div class="legend-item"><div class="legend-pill-demo" style="background:#fff;border-color:var(--adult)"></div>大人</div>
+      <div class="legend-item"><div class="legend-pill-demo" style="background:#fff;border-color:var(--junior)"></div>中学生</div>
+      <div class="legend-item"><div class="legend-pill-demo" style="background:#fff;border-color:var(--elem)"></div>小学生</div>
     </div>
   </div>
   <div id="shift-content"><div class="loading"><span class="spinner"></span>読み込み中...</div></div>
 </div>
 
-<!-- 設定タブ -->
 <div id="tab-settings" class="section">
   <div class="form-card">
     <h2>⚙️ 屋台基本設定</h2>
@@ -300,7 +273,6 @@ document.getElementById('set-date1').value  = settings.date1;
 document.getElementById('set-date2').value  = settings.date2;
 loadMembers();
 
-// ===== GAS: 全件取得 =====
 async function loadMembers() {
   try {
     const res  = await fetch(`${GAS_URL}?action=getAll`);
@@ -316,31 +288,23 @@ async function loadMembers() {
   }
 }
 
-// ===== GAS: 追加（1日目・2日目それぞれ登録）=====
 async function addMember() {
   const name  = document.getElementById('inp-name').value.trim();
   const stall = document.getElementById('inp-stall').value;
-
   if (!name) { showToast('⚠️ 名前を入力してください'); return; }
   if (!dayChecked[1] && !dayChecked[2]) { showToast('⚠️ 1日目か2日目を選んでください'); return; }
-
-  // 各日のバリデーション
   const entries = [];
   for (const day of [1, 2]) {
     if (!dayChecked[day]) continue;
     const start = document.getElementById(`inp-start${day}`).value;
     const end   = document.getElementById(`inp-end${day}`).value;
-    if (!start || !end)  { showToast(`⚠️ ${day}日目の時間を入力してください`); return; }
-    if (start >= end)    { showToast(`⚠️ ${day}日目の終了時間は開始時間より後にしてください`); return; }
+    if (!start || !end) { showToast(`⚠️ ${day}日目の時間を入力してください`); return; }
+    if (start >= end)   { showToast(`⚠️ ${day}日目の終了時間は開始時間より後にしてください`); return; }
     entries.push({ day: String(day), start, end });
   }
-
   const btn = document.getElementById('btn-add');
-  btn.disabled = true;
-  btn.textContent = '送信中...';
-
+  btn.disabled = true; btn.textContent = '送信中...';
   try {
-    // 選択した日数分を順番に登録
     for (const entry of entries) {
       const res  = await fetch(GAS_URL, {
         method: 'POST',
@@ -355,12 +319,10 @@ async function addMember() {
   } catch(e) {
     showToast('⚠️ 追加に失敗しました');
   } finally {
-    btn.disabled = false;
-    btn.textContent = '＋ 追加する';
+    btn.disabled = false; btn.textContent = '＋ 追加する';
   }
 }
 
-// ===== GAS: 削除 =====
 async function deleteMember(id) {
   if (!confirm('このメンバーを削除しますか？')) return;
   try {
@@ -374,7 +336,6 @@ async function deleteMember(id) {
   }
 }
 
-// ===== 日程チェック切替 =====
 function toggleDay(day) {
   dayChecked[day] = !dayChecked[day];
   const check = document.getElementById(`check-day${day}`);
@@ -391,7 +352,6 @@ function toggleDay(day) {
   }
 }
 
-// ===== タブ切替 =====
 function switchTab(name, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -400,7 +360,6 @@ function switchTab(name, btn) {
   if (name === 'shift') renderShift();
 }
 
-// ===== 区分選択 =====
 function selectAge(age) {
   selectedAge = age;
   ['adult','junior','elem'].forEach(a => {
@@ -417,16 +376,19 @@ function stallLabel(s) {
 // ===== メンバー一覧描画 =====
 function renderMemberList() {
   const el = document.getElementById('member-list');
-  document.getElementById('member-count').textContent = members.length;
-  if (!members.length) { el.innerHTML = '<div class="empty-msg">まだ追加されていません</div>'; return; }
 
-  // 名前でグループ化して表示
+  // グループ化（名前＋区分＋屋台でユニーク）
   const grouped = {};
   members.forEach(m => {
     const key = m.name + '_' + (m.age||'adult') + '_' + m.stall;
     if (!grouped[key]) grouped[key] = { ...m, days: [] };
     grouped[key].days.push({ id: m.id, day: m.day, start: m.start, end: m.end });
   });
+
+  // ユニーク人数でカウント
+  document.getElementById('member-count').textContent = Object.keys(grouped).length;
+
+  if (!members.length) { el.innerHTML = '<div class="empty-msg">まだ追加されていません</div>'; return; }
 
   el.innerHTML = Object.values(grouped).map(g => `
     <div class="member-item">
@@ -453,17 +415,14 @@ function renderShift() {
     el.innerHTML = '<div class="empty-msg">まだ参加者が登録されていません。<br>「入力」タブから追加してください。</div>';
     return;
   }
-
   let html = '';
   [1, 2].forEach(day => {
     const dm = members.filter(m => m.day == day);
     if (!dm.length) return;
-
     const slots = generateSlots(dm);
     const dateLabel = day === 1
       ? (settings.date1 ? `（${formatDate(settings.date1)}）` : '')
       : (settings.date2 ? `（${formatDate(settings.date2)}）` : '');
-
     html += `
       <div class="day-section">
         <div class="day-title">🎆 ${day}日目 ${dateLabel}</div>
@@ -484,6 +443,7 @@ function renderShift() {
                 arch: inSlot.filter(m => m.stall==='arch'),
                 tbd:  inSlot.filter(m => m.stall==='tbd')
               };
+              const ageOrder = { adult: 0, junior: 1, elem: 2 };
               const cellContent = (arr, colorClass) => {
                 if (!arr.length) return '<span style="color:#ccc">—</span>';
                 const a = arr.filter(m=>(m.age||'adult')==='adult').length;
@@ -491,7 +451,6 @@ function renderShift() {
                 const e = arr.filter(m=>m.age==='elem').length;
                 const chipsHtml =
                   `${a?`<span class="count-chip chip-adult">${a}</span>`:''}${j?`<span class="count-chip chip-junior">${j}</span>`:''}${e?`<span class="count-chip chip-elem">${e}</span>`:''}`;
-                const ageOrder = { adult: 0, junior: 1, elem: 2 };
                 const pillsHtml = [...arr]
                   .sort((a, b) => (ageOrder[a.age||'adult'] - ageOrder[b.age||'adult']))
                   .map(m => `<span class="pill pill-${m.stall}-${m.age||'adult'}">${m.name}</span>`)
@@ -499,7 +458,7 @@ function renderShift() {
                 return `
                   <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:4px;">
                     <span class="count-total ${colorClass}">${arr.length}</span>
-                    <div class="count-breakdown" style="margin-top:0;">${chipsHtml}</div>
+                    <div class="count-breakdown">${chipsHtml}</div>
                   </div>
                   <div class="names-cell" style="margin-top:4px;">${pillsHtml}</div>`;
               };
@@ -515,7 +474,6 @@ function renderShift() {
         </table></div>
       </div>`;
   });
-
   el.innerHTML = html || '<div class="empty-msg">登録されたメンバーがいません。</div>';
 }
 
