@@ -176,7 +176,7 @@
         <label>担当屋台</label>
         <select id="inp-stall">
           <option value="ball">スーパーボールすくい</option>
-          <option value="arch">的当てアーチェリー</option>
+          <option value="arch">射的(アーチェリー)</option>
           <option value="tbd">未定</option>
         </select>
       </div>
@@ -216,7 +216,7 @@
     <div class="legend-title">■ 屋台（列）</div>
     <div class="legend-row" style="margin-bottom:8px;">
       <div class="legend-item"><div class="legend-dot" style="background:var(--ball)"></div>スーパーボールすくい</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--arch)"></div>的当てアーチェリー</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--arch)"></div>射的(アーチェリー)</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--tbd)"></div>未定</div>
     </div>
     <div class="legend-title">■ 区分（枠線の色）</div>
@@ -238,7 +238,7 @@
     </div>
     <div class="setting-row">
       <div><div class="setting-label">屋台②の名前</div></div>
-      <input class="setting-input" id="set-stall2" value="的当てアーチェリー">
+      <input class="setting-input" id="set-stall2" value="射的(アーチェリー)">
     </div>
     <div class="setting-row">
       <div><div class="setting-label">1日目の日付</div></div>
@@ -263,7 +263,7 @@ let selectedAge = 'adult';
 let dayChecked = { 1: false, 2: false };
 
 let settings = JSON.parse(localStorage.getItem('fm-settings') || 'null') || {
-  stall1: 'スーパーボールすくい', stall2: '的当てアーチェリー', date1: '', date2: ''
+  stall1: 'スーパーボールすくい', stall2: '射的(アーチェリー)', date1: '', date2: ''
 };
 
 const AGE_LABEL = { adult: '大人', junior: '中学生', elem: '小学生' };
@@ -498,7 +498,7 @@ function formatDate(d) {
 
 function saveSettings() {
   settings.stall1 = document.getElementById('set-stall1').value.trim() || 'スーパーボールすくい';
-  settings.stall2 = document.getElementById('set-stall2').value.trim() || '的当てアーチェリー';
+  settings.stall2 = document.getElementById('set-stall2').value.trim() || '射的(アーチェリー)';
   settings.date1  = document.getElementById('set-date1').value;
   settings.date2  = document.getElementById('set-date2').value;
   localStorage.setItem('fm-settings', JSON.stringify(settings));
